@@ -102,3 +102,4 @@ ENV/
 
 # Particular to this app
 secrets.js
+node_modules
