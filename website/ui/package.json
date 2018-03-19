@@ -16,8 +16,7 @@
     "json-loader": "^0.5.7",
     "string-replace-loader": "^2.1.1",
     "style-loader": "^0.20.3",
-    "webpack": "^3.6.0",
-    "webpack-deploy": "^0.13.1"
+    "webpack": "^3.6.0"
   },
   "dependencies": {
     "mithril": "^1.1.6",
