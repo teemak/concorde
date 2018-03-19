@@ -1,10 +1,11 @@
 const Path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 function create_config(options) {
     return {
         entry: "./src/index.js",
         output: {
-            path: __dirname,
+            path: Path.resolve(__dirname, 'dist'),
             filename: "./bin/app.js"
         },
         module: {
@@ -34,7 +35,12 @@ function create_config(options) {
             alias: {
                 Resources: Path.resolve(__dirname, 'resources')
             }
-        }
+        },
+        plugins: [
+            new HtmlWebpackPlugin({
+                title: 'Slack -> Riot.im Migration Manager'
+            })
+        ]
     };
 }
 
