@@ -84,7 +84,6 @@ div.content {
     height: 26px;
     display: inline-block;
     padding-left: 8px;
-    font-size: large;
     border-radius: 5px;
     border: 1px solid #76cfa6;
 }
@@ -120,14 +119,20 @@ div.footer span, div.footer a {
     font-size: smaller;
     margin-bottom: 20px;
 }
-div.error {
+div.error, div.feedback {
+    margin-top: 10px;
     margin-left: 0px;
     margin-right: 4px;
     overflow: hidden;
     margin-bottom: 2px;
     border-radius: 5px;
-    background-color: #faebee;
     padding: 10px;
+}
+div.error {
+    background-color: #faebee;
+}
+div.feedback {
+    background-color: #eaf5f0;
 }
 a:visited {
     color: #454545;

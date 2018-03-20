@@ -22,7 +22,13 @@ const Claim = () => {
     return {
         view: vnode => {
             if (config.registrationApiUrl == '') {
-                return m('div.error', 'The registration API has not been configured - failing fast.');
+                return m('div.error', 'The registration API has not been configured.');
+            }
+            else if (!mxid) {
+                return m('div.error', 'No username was provided.');
+            }
+            else if (!code) {
+                return m('div.error', 'No migration request validation code was provided.');
             }
             return m('div.center', [
                        m('div.header', [
@@ -62,6 +68,7 @@ const Claim = () => {
                                        m('span.value', m('input', {
                                            type: 'password',
                                            value: password,
+                                           autofocus: true,
                                            oninput: m.withAttr('value', value => {
                                                password = value;
                                            })
