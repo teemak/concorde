@@ -1,4 +1,5 @@
 import yaml
+import json
 import hmac
 import hashlib
 
@@ -23,26 +24,48 @@ def availability():
 @app.route('/claim', methods=['POST'])
 def claim():
     content = request.get_json()
-    mxid = content['mxid']
-    code = content['code']
+    mxid = content['mxid'] if 'mxid' in content else ''
+    code = content['code'] if 'code' in content else ''
     new_password = content['password']
 
     if not request_is_valid(mxid, code):
-        return '', 401
+        return json.dumps({
+            'response_code': 401,
+            'message': 'Your request to claim this account could not be validated - please speak to your community administrator.',
+            'error': 'CODE_VALIDATION_FAILURE'
+            })
 
     matrix = Matrix(HOMESERVER)
     try:
         if matrix.claim_account(mxid, PASSGEN_SECRET, new_password):
-            return 'success'
-        return 'failure'
+            return json.dumps({
+                'response_code': 200,
+                'message': 'Your account has been successfully claimed!'
+                })
+        return json.dumps({
+            'response_code': 401,
+            'message': 'This account already seems to have been claimed - please speak to your community administrator.',
+            'error': 'PASSWORD_ALREADY_RESET'
+            })
     except MatrixRequestError as exception:
         if exception.code == 403:
-            return 'Unauthorized', 403
+            return json.dumps({
+                'response_code': 404,
+                'message': 'This account already seems to have been claimed - please speak to your community administrator.',
+                'error': 'PASSWORD_ALREADY_RESET'
+                })
         else:
-            return 'Unflubberized', exception.code
+            return json.dumps({
+                'response_code': exception.code,
+                'message': 'This request failed - please try again later.',
+                'error': 'GENERIC_FAILURE'
+                })
 
 def request_is_valid(mxid, code):
     # Establish the validity of the request:
+    if mxid == '' or code == '':
+        return False
+
     mac = hmac.new(key=MIGRATION_SECRET,
                    digestmod=hashlib.sha1)
     mac.update(mxid)
