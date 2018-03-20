@@ -25,7 +25,8 @@ function create_config(options) {
                         multiple: [
                             { search: 'REGISTRATION_API_URL', replace: options.registrationApiUrl },
                             { search: 'HOMESERVER', replace: options.homeserver },
-                            { search: 'SLACK_TEAM', replace: options.slackTeam }
+                            { search: 'SLACK_TEAM', replace: options.slackTeam },
+                            { search: 'DOMAIN', replace: options.domain }
                         ]
                     }
                 }

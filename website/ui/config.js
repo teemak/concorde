@@ -1,5 +1,6 @@
 module.exports = {
-    registrationApi: 'REGISTRATION_API_URL',
+    registrationApiUrl: 'REGISTRATION_API_URL',
     slackTeam: 'SLACK_TEAM',
-    homeserver: 'HOMESERVER'
+    homeserver: 'HOMESERVER',
+    domain: 'DOMAIN'
 };

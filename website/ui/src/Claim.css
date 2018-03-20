@@ -120,6 +120,15 @@ div.footer span, div.footer a {
     font-size: smaller;
     margin-bottom: 20px;
 }
+div.error {
+    margin-left: 0px;
+    margin-right: 4px;
+    overflow: hidden;
+    margin-bottom: 2px;
+    border-radius: 5px;
+    background-color: #faebee;
+    padding: 10px;
+}
 a:visited {
     color: #454545;
 }

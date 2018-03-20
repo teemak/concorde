@@ -5,7 +5,7 @@ config = require('../config');
 
 const passwordIsValid = (password, password2) => {
     return password == password2 &&
-        password.length > 0;
+        password.length >= 6;
 };
 
 const Claim = () => {
@@ -14,10 +14,16 @@ const Claim = () => {
     var password = '';
     var password2 = '';
 
+    var error = '';
+    var feedback = '';
+
     var loading = false;
 
     return {
         view: vnode => {
+            if (config.registrationApiUrl == '') {
+                return m('div.error', 'The registration API has not been configured - failing fast.');
+            }
             return m('div.center', [
                        m('div.header', [
                            m('img', {src: require('Resources/slack.png')}),
@@ -44,59 +50,80 @@ const Claim = () => {
                                ]) : null,
                                m('div.row', [
                                    m('label', 'Matrix ID:'),
-                                   m('span.value', mxid)
+                                   m('span.value', '@' + mxid + ':' + config.domain)
                                ])
                            ]),
-                           m('h3', 'Choose a new password:'),
-                           m('div.rows', [
-                               m('div.row', [
-                                   m('label', 'Password:'),
-                                   m('span.value', m('input', {
-                                       type: 'password',
-                                       value: password,
-                                       oninput: m.withAttr('value', value => {
-                                           password = value;
-                                       })
-                                   }))
+                           m('form', [
+                               m('h3', 'Choose a password:'),
+                               m('p.explanation', 'Passwords must be 6 characters or longer.'),
+                               m('div.rows', [
+                                   m('div.row', [
+                                       m('label', 'Password:'),
+                                       m('span.value', m('input', {
+                                           type: 'password',
+                                           value: password,
+                                           oninput: m.withAttr('value', value => {
+                                               password = value;
+                                           })
+                                       }))
+                                   ]),
+                                   m('div.row', [
+                                       m('label', 'Confirm Password:'),
+                                       m('span.value', m('input', {
+                                           type: 'password',
+                                           value: password2,
+                                           oninput: m.withAttr('value', value => {
+                                               password2 = value;
+                                           })
+                                       }))
+                                   ]),
                                ]),
-                               m('div.row', [
-                                   m('label', 'Confirm Password:'),
-                                   m('span.value', m('input', {
-                                       type: 'password',
-                                       value: password2,
-                                       oninput: m.withAttr('value', value => {
-                                           password2 = value;
-                                       })
-                                   }))
-                               ]),
-                           ]),
-                           m('button',
-                             {
-                                 class: passwordIsValid(password, password2) ? 'valid' : 'invalid',
-                                 disabled: loading,
-                                 onclick: event => {
-                                     if (!passwordIsValid(password, password2)) {
-                                         alert('Check yo passwords');
-                                     }
-                                     else {
-                                         loading = true;
-                                         m.request({
-                                             method: 'POST',
-                                             url: config.registrationApi + '/claim',
-                                             data: {
-                                                 mxid: mxid,
-                                                 code: code,
-                                                 password: password
+                               feedback != '' ? m('div.feedback', feedback) : null,
+                               error != '' ? m('div.error', error) : null,
+                               m('button',
+                                 {
+                                     class: passwordIsValid(password, password2) ? 'valid' : 'invalid',
+                                     disabled: loading,
+                                     onclick: event => {
+                                         event.preventDefault();
+                                         feedback = ''; error = '';
+                                         if (!passwordIsValid(password, password2)) {
+                                             if (password != password2) {
+                                                 error = 'Please check your passwords to make sure they match';
                                              }
-                                         })
-                                         .then(result => {
-                                             loading = false;
-                                             console.log(result);
-                                         });
+                                             else if (password.length < 7) {
+                                                 error = 'Password must be at least 6 characters long';
+                                             }
+                                         }
+                                         else {
+                                             loading = true;
+                                             m.request({
+                                                 method: 'POST',
+                                                 url: config.registrationApiUrl + '/claim',
+                                                 data: {
+                                                     mxid: mxid,
+                                                     code: code,
+                                                     password: password
+                                                 }
+                                             })
+                                             .then(result => {
+                                                 loading = false;
+                                                 if (result.response_code == 200) {
+                                                     feedback = result.message;
+                                                 }
+                                                 else {
+                                                     error = result.message;
+                                                 }
+                                             })
+                                             .catch(error => {
+                                                 loading = false;
+                                                 error = 'Sorry, something went wrong. Please try again later';
+                                             });
+                                         }
                                      }
-                                 }
-                             },
-                             'Claim my Riot.im account')
+                                 },
+                                 'Claim my Riot.im account')
+                             ]),
                        ]),
                        m('div.footer', [
                            m('span', 'Powered by'),
