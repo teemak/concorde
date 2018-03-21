@@ -18,10 +18,6 @@ class Matrix(object):
     def __init__(self, server):
         self._server = server
 
-    def claim_account(self, mxid, passgen_secret, new_password, password_function=passgen):
-        """Tries to change an account's password from the generated password to a new one."""
-        return self.change_password(mxid, password_function(mxid, passgen_secret), new_password)
-
     def create_account(self, server_secret, mxid, passgen_secret, password_function=passgen, admin=False):
         """Creates a user - the password is generated from a function."""
 
@@ -53,12 +49,18 @@ class Matrix(object):
         else:
             return True
 
-    def change_password(self, mxid, old_password, new_password):
-        """Change a user's password.
-        Warning: this function is slow as balls."""
+    def claim_account(self, mxid, passgen_secret, new_password, display_name=None,
+                      password_function=passgen):
+        """Claims an account by logging in with the genned password, setting a display
+        name, and changing the password to a new password."""
         matrix = MatrixClient(self._server)
-        matrix.login_with_password(username=mxid,
-                                   password=old_password)
+
+        old_password = password_function(mxid, passgen_secret)
+        matrix.login_with_password_no_sync(username=mxid,
+                                           password=old_password)
+
+        if display_name:
+            matrix.api.set_display_name(matrix.user_id, display_name)
 
         body = {
             "auth": {
