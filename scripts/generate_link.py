@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-""""""
+"""cli tool to generate a secure unique link to the migration tool"""
 import hmac
 import hashlib
 import urllib

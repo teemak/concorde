@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-""""""
+"""cli tool to register a Matrix user with a password generated (securely)
+from their mxid"""
 import argparse
 
 from concorde.integrations import Matrix
