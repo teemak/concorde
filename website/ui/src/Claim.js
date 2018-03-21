@@ -11,6 +11,7 @@ const passwordIsValid = (password, password2) => {
 const Claim = () => {
     var username = m.route.param('username');
     var code = m.route.param('code');
+    var displayName = m.route.param('displayName');
     var password = '';
     var password2 = '';
 
@@ -109,6 +110,7 @@ const Claim = () => {
                                                  url: config.registrationApiUrl + '/claim',
                                                  data: {
                                                      username: username,
+                                                     displayName: displayName.replace(/\+/g, ' '),
                                                      code: code,
                                                      password: password
                                                  }
