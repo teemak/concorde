@@ -1,14 +1,14 @@
 # concorde
 
-## So you want to migrate fro Slack to Riot.im?
+## So you want to migrate from Slack to Riot.im?
 
 Great choice! This repo represents a toolkit of self-hostable bits and pieces to make that
 easy for your Slack users.
 
 The **main value of this toolkit** is that it allows you to:
 
-- sync your Slack usernames intoa Matrix homeserver automatically
-- expose a secure way for the original owners of those usernames to register them in Matrix
+- sync your Slack usernames into a Matrix homeserver automatically (and before anyone gets a chance to register publicly)
+- expose a secure way for the original owners of those usernames to register them in Matrix (so if you knew who @somebody was in Slack, you know who @somebody:domain.tld is in Matrix)
 
 If the above isn't important to you then there are likely simpler flows you can try (e.g.
 if you're not worried about users having the same username you might still want to use
