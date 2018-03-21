@@ -1,9 +1,13 @@
-import yaml
+# -*- coding: utf-8 -*-
+"""API to claim pre-registered accounts on a Matrix homeserver - these accounts
+have been registered with generated passwords (a function of the mxid)."""
 import json
 import hmac
 import hashlib
+import yaml
 
-from flask import Flask, Response, request, redirect
+from flask import Flask
+from flask import request
 from flask_cors import CORS
 from concorde.integrations import Matrix
 from matrix_client.errors import MatrixRequestError
@@ -17,43 +21,57 @@ HOMESERVER = config['homeserver']
 PASSGEN_SECRET = config['passgen_secret']       # Used to generate passwords from mxid
 MIGRATION_SECRET = config['migration_secret']   # Used to validate user was sent link by us
 
+def response(code, message, error=None):
+    """Format a standard API response body"""
+    response_object = {
+        'response_code': code,
+        'message': message
+        }
+    if error:
+        response_object['error'] = error
+    return json.dumps(response_object)
+
+SUCCESS = response(200,
+                   'Your account has been successfully claimed!')
+REQUEST_VALIDATION_FAILED = response(401,
+                                     ('Your request to claim this account could not ' +
+                                      'be validated - please contact your community ' +
+                                      'administrator.'),
+                                     'CODE_VALIDATION_FAILURE')
+ALREADY_CLAIMED = response(401,
+                           ('This account has already been claimed - ' +
+                            'please speak to your community administrator.'),
+                           'PASSWORD_ALREADY_RESET')
+
 @app.route('/availability')
 def availability():
+    """Check we're deployed correctly"""
     return 'I\'m here!'
 
 @app.route('/claim', methods=['POST'])
 def claim():
+    """Complete claim of a migrated account. Works by using the passgen_secret to try
+    and log in as the user with the generated password and change their password to
+    the requested new password.
+    If we can't log in with the generated password we assume this means they've already
+    changed their password successfully."""
     content = request.get_json()
     mxid = content['mxid'] if 'mxid' in content else ''
     code = content['code'] if 'code' in content else ''
     new_password = content['password']
 
     if not request_is_valid(mxid, code):
-        return json.dumps({
-            'response_code': 401,
-            'message': 'Your request to claim this account could not be validated - please speak to your community administrator.',
-            'error': 'CODE_VALIDATION_FAILURE'
-            })
+        return REQUEST_VALIDATION_FAILED
 
     matrix = Matrix(HOMESERVER)
     try:
         if matrix.claim_account(mxid, PASSGEN_SECRET, new_password):
-            return json.dumps({
-                'response_code': 200,
-                'message': 'Your account has been successfully claimed!'
-                })
-        return json.dumps({
-            'response_code': 401,
-            'message': 'This account already seems to have been claimed - please speak to your community administrator.',
-            'error': 'PASSWORD_ALREADY_RESET'
-            })
+            return SUCCESS
+        else:
+            return ALREADY_CLAIMED
     except MatrixRequestError as exception:
         if exception.code == 403:
-            return json.dumps({
-                'response_code': 404,
-                'message': 'This account already seems to have been claimed - please speak to your community administrator.',
-                'error': 'PASSWORD_ALREADY_RESET'
-                })
+            return ALREADY_CLAIMED
         else:
             return json.dumps({
                 'response_code': exception.code,
@@ -62,6 +80,8 @@ def claim():
                 })
 
 def request_is_valid(mxid, code):
+    """Validate that the code provided has been hashed using the secret shared
+    with the link-generation cli script"""
     # Establish the validity of the request:
     if mxid == '' or code == '':
         return False
