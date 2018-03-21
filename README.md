@@ -32,7 +32,7 @@ rely on standard Matrix third party identifier invites to invite users by email)
     - note the generated AWS API gateway URL
 1. Build the static site
     - `cd website/ui`
-    - `npm run-script build -- --env.registrationApiUrl <API gateway URL> --env.homeserver <url of homeserver, cosmetic> --env.slackTeam <slack team name, cosmetic> --env.domain <mxid domain part, cosmetic>`
+    - `npm run-script build -- --env.registrationApiUrl <API gateway URL> --env.homeserver <url of homeserver, cosmetic> --env.slackTeam <slack team name, cosmetic>
     - `aws s3 sync ./dist s3://bucket_name/prod`
     - go into AWS and make /prod publicly accessible
     - get the public URL of /prod/index.html
@@ -51,7 +51,7 @@ rely on standard Matrix third party identifier invites to invite users by email)
     - `cd scripts`
     - `./list_slack_users.py --bot-oauth-token <bot-oauth-token>`
     - `./register_matrix_user.py --homeserver <homeserver_url> --homeserver-secret <homeserver_secret> --passgen-secret <passgen_secret> <mxid mxid mxid...>`
-    - `./generate_link.py --migration-secret <migration_secret> <S3 public url for index.html> <mxid>`
+    - `./generate_link.py --migration-secret <migration_secret> <S3 public url for index.html> <mxid> --display-name <display name>`
     - `./send_slack_dm.py --bot-oauth-token <bot-oauth-token> <slack user id> <message (probably including the generated link)>`
 
 And Bob's your uncle.
