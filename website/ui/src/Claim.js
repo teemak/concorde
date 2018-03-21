@@ -9,7 +9,7 @@ const passwordIsValid = (password, password2) => {
 };
 
 const Claim = () => {
-    var mxid = m.route.param('mxid');
+    var username = m.route.param('username');
     var code = m.route.param('code');
     var password = '';
     var password2 = '';
@@ -24,7 +24,7 @@ const Claim = () => {
             if (config.registrationApiUrl == '') {
                 return m('div.error', 'The registration API has not been configured.');
             }
-            else if (!mxid) {
+            else if (!username) {
                 return m('div.error', 'No username was provided.');
             }
             else if (!code) {
@@ -56,7 +56,7 @@ const Claim = () => {
                                ]) : null,
                                m('div.row', [
                                    m('label', 'Matrix ID:'),
-                                   m('span.value', '@' + mxid + ':' + config.domain)
+                                   m('span.value', username)
                                ])
                            ]),
                            m('form', [
@@ -108,7 +108,7 @@ const Claim = () => {
                                                  method: 'POST',
                                                  url: config.registrationApiUrl + '/claim',
                                                  data: {
-                                                     mxid: mxid,
+                                                     username: username,
                                                      code: code,
                                                      password: password
                                                  }

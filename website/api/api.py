@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """API to claim pre-registered accounts on a Matrix homeserver - these accounts
-have been registered with generated passwords (a function of the mxid)."""
+have been registered with generated passwords (a function of the username)."""
 import json
 import hmac
 import hashlib
@@ -18,7 +18,7 @@ CORS(app)
 config = yaml.load(open('config.yaml', 'r'))
 
 HOMESERVER = config['homeserver']
-PASSGEN_SECRET = config['passgen_secret']       # Used to generate passwords from mxid
+PASSGEN_SECRET = config['passgen_secret']       # Used to generate passwords from username
 MIGRATION_SECRET = config['migration_secret']   # Used to validate user was sent link by us
 
 def response(code, message, error=None):
@@ -56,16 +56,17 @@ def claim():
     If we can't log in with the generated password we assume this means they've already
     changed their password successfully."""
     content = request.get_json()
-    mxid = content['mxid'] if 'mxid' in content else ''
+    username = content['username'] if 'username' in content else ''
     code = content['code'] if 'code' in content else ''
+    display_name = content['displayName'] if 'displayName' in content else None
     new_password = content['password']
 
-    if not request_is_valid(mxid, code):
+    if not request_is_valid(username, code):
         return REQUEST_VALIDATION_FAILED
 
     matrix = Matrix(HOMESERVER)
     try:
-        if matrix.claim_account(mxid, PASSGEN_SECRET, new_password):
+        if matrix.claim_account(username, PASSGEN_SECRET, new_password, display_name):
             return SUCCESS
         else:
             return ALREADY_CLAIMED
@@ -79,16 +80,16 @@ def claim():
                 'error': 'GENERIC_FAILURE'
                 })
 
-def request_is_valid(mxid, code):
+def request_is_valid(username, code):
     """Validate that the code provided has been hashed using the secret shared
     with the link-generation cli script"""
     # Establish the validity of the request:
-    if mxid == '' or code == '':
+    if username == '' or code == '':
         return False
 
     mac = hmac.new(key=MIGRATION_SECRET,
                    digestmod=hashlib.sha1)
-    mac.update(mxid)
+    mac.update(username)
 
     return mac.hexdigest() == code
 
