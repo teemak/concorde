@@ -78,4 +78,6 @@ class Matrix(object):
 
         matrix.api._send('POST', '/account/password', body, api_path='/_matrix/client/r0')
 # >>>>> lukeb: if this fails, should we not raise an exception?
+        # >>>>> lukeb: OH. I think I get it. This will through 403 if the password has already been set?
+        #              This is incredibly subtle and uncommented. Maybe we should catch and return false?
         return True
