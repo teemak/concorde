@@ -10,6 +10,7 @@ from matrix_client.client import MatrixClient
 
 def passgen(mxid, salt):
     """Function for translating a mxid into a known-but-unguessable password."""
+# >>>>> lukeb: we should be using sha2 (e.g. sha256) (sha1 is known to be vulnerable)
     return hashlib.sha1(mxid + '\x00' + salt).hexdigest()
 
 class Matrix(object):
@@ -21,6 +22,7 @@ class Matrix(object):
     def create_account(self, server_secret, mxid, passgen_secret, password_function=passgen, admin=False):
         """Creates a user - the password is generated from a function."""
 
+# >>>>> lukeb: this needs an explanation comment and possibly a better name
         mac = hmac.new(key=server_secret,
                        digestmod=hashlib.sha1)
 
@@ -30,6 +32,7 @@ class Matrix(object):
         mac.update("\x00")
         mac.update(password)
         mac.update("\x00")
+# >>>>> lukeb: this is quite subtle, worth a comment
         mac.update("admin" if admin else "notadmin")
 
         body = {
@@ -72,4 +75,5 @@ class Matrix(object):
         }
 
         matrix.api._send('POST', '/account/password', body, api_path='/_matrix/client/r0')
+# >>>>> lukeb: if this fails, should we not raise an exception?
         return True
