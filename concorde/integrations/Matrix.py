@@ -17,6 +17,7 @@ class Matrix(object):
     """For wrangling the Matrix users."""
 
     def __init__(self, server):
+# >>>>> lukeb: this should be renamed to be closer to "base URL", which I think it is
         self._server = server
 
     def create_account(self, server_secret, mxid, passgen_secret, password_function=passgen, admin=False):
@@ -40,6 +41,7 @@ class Matrix(object):
             "password": password,
             "mac": mac.hexdigest(),
             "type": "org.matrix.login.shared_secret",
+# >>>>> lukeb: what *does* this do?
             "admin": admin, # XXX: What does this even do?
         }
 
