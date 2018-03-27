@@ -1,29 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """cli tool to register a Matrix user with a password generated (securely)
-from their mxid"""
+from their username"""
 import argparse
 
 from concorde.integrations import Matrix
-from concored.exceptions import UserRegistrationFailed
+from concorde.exceptions import UserRegistrationFailed
 
 parser = argparse.ArgumentParser(description='Register matrix users with a Matrix homeserver')
 parser.add_argument('--homeserver', required=True)
 parser.add_argument('--homeserver-secret', required=True)
 parser.add_argument('--passgen-secret', required=True)
-parser.add_argument('mxids', nargs='*')
+parser.add_argument('usernames', nargs='+')
 args = parser.parse_args()
 
 homeserver_secret = args.homeserver_secret
 passgen_secret = args.passgen_secret
-mxids = args.mxids
-
-assert len(mxids) > 0
+usernames = args.usernames
 
 matrix = Matrix(args.homeserver)
 
-for mxid in args.mxids:
+for username in args.usernames:
     try:
-        print mxid, matrix.create_account(args.homeserver_secret, mxid, args.passgen_secret)
+        print username, matrix.create_account(args.homeserver_secret, username, args.passgen_secret)
     except UserRegistrationFailed as exception:
-        print mxid, exception.response_code, exception.message
+        print username, exception.response_code, exception.message

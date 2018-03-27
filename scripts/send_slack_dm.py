@@ -12,8 +12,8 @@ from slackclient import SlackClient
 parser = argparse.ArgumentParser(description='Send a DM to a Slack user')
 parser.add_argument('--bot-oauth-token')
 parser.add_argument('--skip-rate-limit', action='store_true')
-parser.add_argument('slack_id')
-parser.add_argument('message')
+parser.add_argument('slack_id', required=True)
+parser.add_argument('message', required=True)
 args = parser.parse_args()
 
 token = (args.bot_oauth_token or
@@ -23,9 +23,7 @@ slack_id = args.slack_id
 message = args.message
 skip_rate_limit = args.skip_rate_limit
 
-assert token is not None
-assert slack_id is not None
-assert message is not None
+assert token is not None, 'No Slack bot oauth token provided!'
 
 slack = SlackClient(token)
 
@@ -37,11 +35,11 @@ send = slack.api_call('chat.postMessage',
 if 'error' in send:
     print >> sys.stderr, 'ERROR:', send['error'],
 else:
-    print >> sys.stderr, 'SENT',
+    print >> sys.stdout, 'SENT',
 
 if not skip_rate_limit:
     # If we're sending a whole bunch of these at once (as we'd usually expect)
     # we're going to want to respect Slack's rate limit of 1 message/second
-    print >> sys.stderr, 'Respecting rate limit...',
+    print >> sys.stdout, 'Respecting rate limit...',
     time.sleep(1)
-    print >> sys.stderr, 'DONE'
+    print >> sys.stdout, 'DONE'
