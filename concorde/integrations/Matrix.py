@@ -7,6 +7,9 @@ import hashlib
 import requests
 
 from matrix_client.client import MatrixClient
+from matrix_client.errors import MatrixRequestError
+
+from concorde.exceptions import PasswordAlreadyReset, UserRegistrationFailed
 
 def passgen(mxid, passgen_secret):
     """Function for translating a mxid into a known-but-unguessable password."""
@@ -15,11 +18,15 @@ def passgen(mxid, passgen_secret):
 class Matrix(object):
     """For wrangling the Matrix users."""
 
-    def __init__(self, server):
-        self._server = server
+    def __init__(self, base_url):
+        self._base_url = base_url
 
     def create_account(self, server_secret, mxid, passgen_secret, password_function=passgen):
         """Creates a user - the password is generated from a function."""
+
+        # We register via the /register API by assembling the registration request into
+        # a message body, then encrypting that message with the server's registration secret
+        # so that it can validate the authenticity of the request.
 
         mac = hmac.new(key=server_secret,
                        digestmod=hashlib.sha256)
@@ -40,12 +47,12 @@ class Matrix(object):
             "admin": False # Specifies that this user is not a Synapse server admin
         }
 
-        response = requests.post('%s/_matrix/client/api/v1/register' % self._server,
+        response = requests.post('%s/_matrix/client/api/v1/register' % self._base_url,
                                  data=json.dumps(body),
                                  headers={'Content-Type': 'application/json'})
 
         if response.status_code != 200:
-            raise Exception(response.status_code, response.text)
+            raise UserRegistrationFailed(response.status_code, response.text)
         else:
             return True
 
@@ -53,7 +60,7 @@ class Matrix(object):
                       password_function=passgen):
         """Claims an account by logging in with the genned password, setting a display
         name, and changing the password to a new password."""
-        matrix = MatrixClient(self._server)
+        matrix = MatrixClient(self._base_url)
 
         old_password = password_function(mxid, passgen_secret)
         matrix.login_with_password_no_sync(username=mxid,
@@ -71,5 +78,10 @@ class Matrix(object):
             "new_password": new_password
         }
 
-        matrix.api._send('POST', '/account/password', body, api_path='/_matrix/client/r0')
-        return True
+        try:
+            matrix.api._send('POST', '/account/password', body, api_path='/_matrix/client/r0')
+            return True
+        except MatrixRequestError as exception:
+            if exception.code == 403:
+                raise PasswordAlreadyReset(exception)
+            raise exception
