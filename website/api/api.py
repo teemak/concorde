@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """API to claim pre-registered accounts on a Matrix homeserver - these accounts
-have been registered with generated passwords (a function of the username)."""
+have been registered with generated passwords (a function of the username, keyed
+on migration secret)."""
 import json
 import hmac
 import hashlib
