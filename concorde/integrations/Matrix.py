@@ -10,17 +10,20 @@ from matrix_client.client import MatrixClient
 
 def passgen(mxid, salt):
     """Function for translating a mxid into a known-but-unguessable password."""
+# >>>>> lukeb: we should be using sha2 (e.g. sha256) (sha1 is known to be vulnerable)
     return hashlib.sha1(mxid + '\x00' + salt).hexdigest()
 
 class Matrix(object):
     """For wrangling the Matrix users."""
 
     def __init__(self, server):
+# >>>>> lukeb: this should be renamed to be closer to "base URL", which I think it is
         self._server = server
 
     def create_account(self, server_secret, mxid, passgen_secret, password_function=passgen, admin=False):
         """Creates a user - the password is generated from a function."""
 
+# >>>>> lukeb: this needs an explanation comment and possibly a better name
         mac = hmac.new(key=server_secret,
                        digestmod=hashlib.sha1)
 
@@ -30,6 +33,7 @@ class Matrix(object):
         mac.update("\x00")
         mac.update(password)
         mac.update("\x00")
+# >>>>> lukeb: this is quite subtle, worth a comment
         mac.update("admin" if admin else "notadmin")
 
         body = {
@@ -37,6 +41,7 @@ class Matrix(object):
             "password": password,
             "mac": mac.hexdigest(),
             "type": "org.matrix.login.shared_secret",
+# >>>>> lukeb: what *does* this do?
             "admin": admin, # XXX: What does this even do?
         }
 
@@ -72,4 +77,7 @@ class Matrix(object):
         }
 
         matrix.api._send('POST', '/account/password', body, api_path='/_matrix/client/r0')
+# >>>>> lukeb: if this fails, should we not raise an exception?
+        # >>>>> lukeb: OH. I think I get it. This will through 403 if the password has already been set?
+        #              This is incredibly subtle and uncommented. Maybe we should catch and return false?
         return True

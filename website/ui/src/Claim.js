@@ -4,6 +4,7 @@ require('./Claim.css');
 config = require('../config');
 
 const passwordIsValid = (password, password2) => {
+# >>>>> lukeb: This should really be responsible for throwing the appropriat errors
     return password == password2 &&
         password.length >= 6;
 };
@@ -47,6 +48,7 @@ const Claim = () => {
                                   'federated, encrypted messaging.'),
                            m('h3', 'Migration details:'),
                            m('div.rows', [
+# >>>>> lukeb: this feels like a subtle way to do default-detection. Or have I misunderstood this?
                                config.slackTeam != 'SLACK_TEAM' ? m('div.row', [
                                    m('label', 'Slack Team:'),
                                    m('span.value', config.slackTeam)
@@ -96,6 +98,9 @@ const Claim = () => {
                                          event.preventDefault();
                                          feedback = ''; error = '';
                                          if (!passwordIsValid(password, password2)) {
+# >>>>> lukeb: the conditions here are slightly different to those in passwordIsValid. There should
+# be one set of conditions in a single function, which also decides which string to display or at least
+# returns an error code to be used in the view.
                                              if (password != password2) {
                                                  error = 'Please check your passwords to make sure they match';
                                              }
@@ -110,6 +115,7 @@ const Claim = () => {
                                                  url: config.registrationApiUrl + '/claim',
                                                  data: {
                                                      username: username,
+# >>>>> lukeb: Why is this a thing? What if someone has a "+" in there user ID?
                                                      displayName: displayName.replace(/\+/g, ' '),
                                                      code: code,
                                                      password: password

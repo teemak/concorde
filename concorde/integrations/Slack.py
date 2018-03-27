@@ -6,6 +6,7 @@ import time
 from slackclient import SlackClient
 
 class Slack(object):
+# >>>>> lukeb: Probably worth mentioning that we do this as the bot with the token slack_token (if this is true)
     """Class for messaging the Slack users"""
 
     def __init__(self, slack_token):
@@ -13,11 +14,13 @@ class Slack(object):
 
     def listen(self):
         """Listens for inbound Slack events."""
+# >>>>> lukeb: does this raise an exception if it fails?
         if self._slack.rtm_connect():
             while True:
                 output = self._slack.rtm_read()
                 for event in self._filter_slack_output(output):
                     self._process(event)
+# >>>>> lukeb: is this for rate-limiting? Or does rtm_read block until it has something?
                 time.sleep(1)
 
     def team(self):
@@ -52,6 +55,7 @@ class Slack(object):
 
     @staticmethod
     def _filter_slack_output(output):
+# >>>>> lukeb: (nit) "users9"
         """We only want to react to messages, and we want to exclude certain users9
         (such as slackbot)"""
         barred_users = ['USLACKBOT']
@@ -63,4 +67,5 @@ class Slack(object):
 
     def _process(self, event):
         """Processes an inbound Slack event."""
+# >>>>> lukeb: :D         
         self.direct_message(event['user'], 'I don\'t understand humans.')

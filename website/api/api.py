@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """API to claim pre-registered accounts on a Matrix homeserver - these accounts
+# >>>>> lukeb: a function of username, keyed on migration secret, right?
 have been registered with generated passwords (a function of the username)."""
 import json
 import hmac
@@ -34,7 +35,9 @@ def response(code, message, error=None):
 SUCCESS = response(200,
                    'Your account has been successfully claimed!')
 REQUEST_VALIDATION_FAILED = response(401,
-                                     ('Your request to claim this account could not ' +
+# >>>>> lukeb: is there any information we can provide here that might make
+#              the admin's job easier?
+        ('Your request to claim this account could not ' +
                                       'be validated - please contact your community ' +
                                       'administrator.'),
                                      'CODE_VALIDATION_FAILURE')
@@ -66,11 +69,13 @@ def claim():
 
     matrix = Matrix(HOMESERVER)
     try:
+# >>>>> lukeb: claim_account always returns True...
         if matrix.claim_account(username, PASSGEN_SECRET, new_password, display_name):
             return SUCCESS
         else:
             return ALREADY_CLAIMED
     except MatrixRequestError as exception:
+# >>>>> lukeb: We should probably log the exception if we're throwing non-403s away
         if exception.code == 403:
             return ALREADY_CLAIMED
         else:
