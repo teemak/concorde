@@ -29,7 +29,7 @@ class Matrix(object):
         # so that it can validate the authenticity of the request.
 
         mac = hmac.new(key=server_secret,
-                       digestmod=hashlib.sha256)
+                       digestmod=hashlib.sha1)
 
         password = password_function(mxid, passgen_secret)
 
