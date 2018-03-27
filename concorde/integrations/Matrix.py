@@ -8,9 +8,9 @@ import requests
 
 from matrix_client.client import MatrixClient
 
-def passgen(mxid, salt):
+def passgen(mxid, passgen_secret):
     """Function for translating a mxid into a known-but-unguessable password."""
-    return hashlib.sha1(mxid + '\x00' + salt).hexdigest()
+    return hashlib.sha256(mxid + '\x00' + passgen_secret).hexdigest()
 
 class Matrix(object):
     """For wrangling the Matrix users."""
@@ -22,7 +22,7 @@ class Matrix(object):
         """Creates a user - the password is generated from a function."""
 
         mac = hmac.new(key=server_secret,
-                       digestmod=hashlib.sha1)
+                       digestmod=hashlib.sha256)
 
         password = password_function(mxid, passgen_secret)
 
