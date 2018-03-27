@@ -135,6 +135,10 @@ const Claim = () => {
                                                  url: config.registrationApiUrl + '/claim',
                                                  data: {
                                                      username: username,
+                                                     /* This weird replace is because python's urllib encodes spaces as
+                                                      * + (as is reasonable) but mithril doesn't translate those +'es
+                                                      * back into real spaces (boo). Luckily, urllib does encode real +'es
+                                                      * as %2B so display names containing a + will roundtrip safely. */
                                                      displayName: displayName.replace(/\+/g, ' '),
                                                      code: code,
                                                      password: password
