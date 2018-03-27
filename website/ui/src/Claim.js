@@ -3,6 +3,36 @@ m = require('mithril');
 require('./Claim.css');
 config = require('../config');
 
+const Password = (() => {
+    var minimumLength = 6;
+
+    var E_PASSWORD_TOO_SHORT = 'Password must be at least ' + minimumLength + ' characters long';
+    var E_PASSWORDS_DONT_MATCH = 'Please check your passwords to make sure they match';
+
+    var passwordIsLongEnought = (password1) => {
+        return password1.length >= minimumLength;
+    };
+
+    return {
+        requirements: E_PASSWORD_TOO_SHORT,
+
+        isValid: (password1, password2) => {
+            return password1 == password2 &&
+                passwordIsLongEnough(password1);
+        },
+
+        errorMessage: (password1, password2) => {
+            if (password1 != password2) {
+                return E_PASSWORDS_DONT_MATCH;
+            }
+            else if (!passwordIsLongEnough(password1)) {
+                return E_PASSWORD_TOO_SHORT;
+            }
+            return '';
+        }
+    };
+})();
+
 const passwordIsValid = (password, password2) => {
     return password == password2 &&
         password.length >= 6;
@@ -62,7 +92,7 @@ const Claim = () => {
                            ]),
                            m('form', [
                                m('h3', 'Choose a password:'),
-                               m('p.explanation', 'Passwords must be 6 characters or longer.'),
+                               m('p.explanation', Password.requirements),
                                m('div.rows', [
                                    m('div.row', [
                                        m('label', 'Password:'),
@@ -95,13 +125,8 @@ const Claim = () => {
                                      onclick: event => {
                                          event.preventDefault();
                                          feedback = ''; error = '';
-                                         if (!passwordIsValid(password, password2)) {
-                                             if (password != password2) {
-                                                 error = 'Please check your passwords to make sure they match';
-                                             }
-                                             else if (password.length < 7) {
-                                                 error = 'Password must be at least 6 characters long';
-                                             }
+                                         if (!Password.IsValid(password, password2)) {
+                                             error = Password.errorMessage(password, password2);
                                          }
                                          else {
                                              loading = true;
