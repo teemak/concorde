@@ -5,6 +5,9 @@
 Great choice! This repo represents a toolkit of self-hostable bits and pieces to make that
 easy for your Slack users.
 
+**XXX: Warning!** - These instructions are so far only of a quality that they might serve to jog my memory. Anyone else trying to work through these will find it difficult. If you want to try this in the wild, contact me at **@tom:lant.uk**.
+
+<hr>
 The **main value of this toolkit** is that it allows you to:
 
 - sync your Slack usernames into a Matrix homeserver automatically (and before anyone gets a chance to register publicly)

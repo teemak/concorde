@@ -23,7 +23,6 @@ class Matrix(object):
 
     def create_account(self, server_secret, mxid, passgen_secret, password_function=passgen):
         """Creates a user - the password is generated from a function."""
-
         # We register via the /register API by assembling the registration request into
         # a message body, then encrypting that message with the server's registration secret
         # so that it can validate the authenticity of the request.

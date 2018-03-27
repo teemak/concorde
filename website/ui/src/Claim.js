@@ -33,11 +33,6 @@ const Password = (() => {
     };
 })();
 
-const passwordIsValid = (password, password2) => {
-    return password == password2 &&
-        password.length >= 6;
-};
-
 const Claim = () => {
     var username = m.route.param('username');
     var code = m.route.param('code');

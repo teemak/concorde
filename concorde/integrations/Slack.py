@@ -4,6 +4,7 @@
 from slackclient import SlackClient
 
 class Slack(object):
+# >>>>> lukeb: Probably worth mentioning that we do this as the bot with the token slack_token (if this is true)
     """Class for messaging the Slack users"""
 
     def __init__(self, slack_token):

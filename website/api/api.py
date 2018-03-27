@@ -38,7 +38,7 @@ def response(code, message, error=None):
 SUCCESS = response(200,
                    'Your account has been successfully claimed!')
 REQUEST_VALIDATION_FAILED = response(401,
-                                     ('Your request to claim this account could not ' +
+        ('Your request to claim this account could not ' +
                                       'be validated - please contact your community ' +
                                       'administrator.'),
                                      'CODE_VALIDATION_FAILURE')
