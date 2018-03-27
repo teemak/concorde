@@ -9,8 +9,11 @@ import yaml
 from flask import Flask
 from flask import request
 from flask_cors import CORS
-from concorde.integrations import Matrix
+
 from matrix_client.errors import MatrixRequestError
+
+from concorde.integrations import Matrix
+from concorde.exceptions import PasswordAlreadyReset
 
 app = Flask(__name__)
 CORS(app)
@@ -66,19 +69,16 @@ def claim():
 
     matrix = Matrix(HOMESERVER)
     try:
-        if matrix.claim_account(username, PASSGEN_SECRET, new_password, display_name):
-            return SUCCESS
-        else:
-            return ALREADY_CLAIMED
+        matrix.claim_account(username, PASSGEN_SECRET, new_password, display_name)
+        return SUCCESS
+    except PasswordAlreadyReset:
+        return ALREADY_CLAIMED
     except MatrixRequestError as exception:
-        if exception.code == 403:
-            return ALREADY_CLAIMED
-        else:
-            return json.dumps({
-                'response_code': exception.code,
-                'message': 'This request failed - please try again later.',
-                'error': 'GENERIC_FAILURE'
-                })
+        return json.dumps({
+            'response_code': exception.code,
+            'message': 'This request failed - please try again later.',
+            'error': 'GENERIC_FAILURE'
+            })
 
 def request_is_valid(username, code):
     """Validate that the code provided has been hashed using the secret shared

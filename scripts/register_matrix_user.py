@@ -5,6 +5,7 @@ from their mxid"""
 import argparse
 
 from concorde.integrations import Matrix
+from concored.exceptions import UserRegistrationFailed
 
 parser = argparse.ArgumentParser(description='Register matrix users with a Matrix homeserver')
 parser.add_argument('--homeserver', required=True)
@@ -22,4 +23,7 @@ assert len(mxids) > 0
 matrix = Matrix(args.homeserver)
 
 for mxid in args.mxids:
-    print mxid, matrix.create_account(args.homeserver_secret, mxid, args.passgen_secret)
+    try:
+        print mxid, matrix.create_account(args.homeserver_secret, mxid, args.passgen_secret)
+    except UserRegistrationFailed as exception:
+        print mxid, exception.response_code, exception.message
