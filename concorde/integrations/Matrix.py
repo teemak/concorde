@@ -18,7 +18,7 @@ class Matrix(object):
     def __init__(self, server):
         self._server = server
 
-    def create_account(self, server_secret, mxid, passgen_secret, password_function=passgen, admin=False):
+    def create_account(self, server_secret, mxid, passgen_secret, password_function=passgen):
         """Creates a user - the password is generated from a function."""
 
         mac = hmac.new(key=server_secret,
@@ -30,14 +30,14 @@ class Matrix(object):
         mac.update("\x00")
         mac.update(password)
         mac.update("\x00")
-        mac.update("admin" if admin else "notadmin")
+        mac.update("notadmin")
 
         body = {
             "user": mxid,
             "password": password,
             "mac": mac.hexdigest(),
             "type": "org.matrix.login.shared_secret",
-            "admin": admin, # XXX: What does this even do?
+            "admin": False # Specifies that this user is not a Synapse server admin
         }
 
         response = requests.post('%s/_matrix/client/api/v1/register' % self._server,
