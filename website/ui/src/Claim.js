@@ -1,7 +1,7 @@
-m = require('mithril');
+const m = require('mithril');
 
 require('./Claim.css');
-config = require('../config');
+const config = require('../config');
 
 const Password = (() => {
     var minimumLength = 6;
@@ -9,26 +9,21 @@ const Password = (() => {
     var E_PASSWORD_TOO_SHORT = 'Password must be at least ' + minimumLength + ' characters long';
     var E_PASSWORDS_DONT_MATCH = 'Please check your passwords to make sure they match';
 
-    var passwordIsLongEnought = (password1) => {
+    var passwordIsLongEnough = (password1) => {
         return password1.length >= minimumLength;
     };
 
     return {
         requirements: E_PASSWORD_TOO_SHORT,
 
-        isValid: (password1, password2) => {
-            return password1 == password2 &&
-                passwordIsLongEnough(password1);
-        },
-
-        errorMessage: (password1, password2) => {
+        validate: (password1, password2) => {
             if (password1 != password2) {
                 return E_PASSWORDS_DONT_MATCH;
             }
             else if (!passwordIsLongEnough(password1)) {
                 return E_PASSWORD_TOO_SHORT;
             }
-            return '';
+            return null;
         }
     };
 })();
@@ -46,7 +41,7 @@ const Claim = () => {
     var loading = false;
 
     return {
-        view: vnode => {
+        view: () => {
             if (config.registrationApiUrl == '') {
                 return m('div.error', 'The registration API has not been configured.');
             }
@@ -120,8 +115,9 @@ const Claim = () => {
                                      onclick: event => {
                                          event.preventDefault();
                                          feedback = ''; error = '';
-                                         if (!Password.IsValid(password, password2)) {
-                                             error = Password.errorMessage(password, password2);
+                                         var passwordValidationMessage = Password.validate(password, password2);
+                                         if (passwordValidationMessage) {
+                                             error = passwordValidationMessage;
                                          }
                                          else {
                                              loading = true;
