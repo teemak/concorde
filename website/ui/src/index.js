@@ -1,13 +1,6 @@
-m = require('mithril')
+const m = require('mithril');
 
-c = require('./Claim.js')
-
-const Claim = {
-    view: vnode => {
-        return m(c);
-    }
-
-};
+const Claim = require('./Claim.js');
 
 m.route(document.body, '/', {
     '/': Claim
