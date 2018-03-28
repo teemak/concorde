@@ -24,4 +24,4 @@ for username in args.usernames:
     try:
         print username, matrix.create_account(args.homeserver_secret, username, args.passgen_secret)
     except UserRegistrationFailed as exception:
-        print username, exception.response_code, exception.message
+        print username, False, exception.response_code, exception.message
