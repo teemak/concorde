@@ -36,7 +36,7 @@ const Claim = () => {
     var password2 = '';
 
     var error = '';
-    var feedback = '';
+    var success = false;
 
     var loading = false;
     
@@ -111,15 +111,22 @@ const Claim = () => {
                                 }))
                             ]),
                         ]),
-                        feedback != '' ? m('div.feedback', feedback) : null,
+                        success ? m('div.success', [
+                            m('p', 'Congratulations! You have successfully claimed your Riot.im account.'),
+                            m('p', [
+                                m('span', 'You can now log in to your Riot.im account with your new password at'),
+                                m('a', {href: config.riotUrl}, config.riotUrl),
+                                m('span', '.')
+                            ])
+                        ]) : null,
                         error != '' ? m('div.error', error) : null,
                         m('button',
                             {
                                 class: Password.validate(password, password2) ? 'valid' : 'invalid',
-                                disabled: loading,
+                                disabled: success || loading,
                                 onclick: event => {
                                     event.preventDefault();
-                                    feedback = ''; error = '';
+                                    error = '';
                                     var passwordValidationMessage = Password.validate(password, password2);
                                     if (passwordValidationMessage) {
                                         error = passwordValidationMessage;
@@ -142,7 +149,7 @@ const Claim = () => {
                                         }).then(result => {
                                             loading = false;
                                             if (result.response_code == 200) {
-                                                feedback = result.message;
+                                                success = true;
                                             }
                                             else {
                                                 error = result.message;

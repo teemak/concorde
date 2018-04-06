@@ -124,7 +124,7 @@ div.footer span, div.footer a {
     font-size: smaller;
     margin-bottom: 20px;
 }
-div.error, div.feedback {
+div.error, div.success {
     margin-top: 10px;
     margin-left: 0px;
     margin-right: 4px;
@@ -136,7 +136,7 @@ div.error, div.feedback {
 div.error {
     background-color: #faebee;
 }
-div.feedback {
+div.success {
     background-color: #eaf5f0;
 }
 a:visited {
