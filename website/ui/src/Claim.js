@@ -39,6 +39,8 @@ const Claim = () => {
     var feedback = '';
 
     var loading = false;
+    
+    const mxid = '@' + username + ':' + config.matrixDomain;
 
     return {
         view: () => {
@@ -71,13 +73,16 @@ const Claim = () => {
                             m('label', 'Slack Team:'),
                             m('span.value', config.slackTeam)
                         ]) : null,
-                        config.homeserver != 'HOMESERVER' ? m('div.row', [
-                            m('label', 'Matrix Home Server:'),
-                            m('span.value', config.homeserver)
-                        ]) : null,
                         m('div.row', [
-                            m('label', 'Matrix ID:'),
-                            m('span.value', username)
+                            m('label', 'Riot Instance:'),
+                            m('span.value', config.riotUrl)
+                        ]),
+                        m('div.row', [
+                            m('label', 'Username:'),
+                            m('span.value', {title: mxid}, [
+                                m('span.username', username),
+                                m('span.mxid', mxid)
+                            ])
                         ])
                     ]),
                     m('form', [
