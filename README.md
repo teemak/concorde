@@ -40,6 +40,7 @@ rely on standard Matrix third party identifier invites to invite users by email)
     - go into AWS and make /prod publicly accessible
     - get the public URL of /prod/index.html
 1. Register a slack bot on your worksapce
+    - **Check you have capacity to add a new integration** - Slack restricts free accounts to **10 integrations**
     - go to https://api.slack.com/apps
     - register an app
     - click 'Add features and functionality'
