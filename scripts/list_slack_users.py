@@ -16,8 +16,8 @@ parser.add_argument('--fields', nargs='*')
 args = parser.parse_args()
 
 token = (args.bot_oauth_token or
-         os.environ['SLACK_CLIENT_TOKEN']
-         if 'SLACK_CLIENT_TOKEN' in os.environ else None)
+         (os.environ['SLACK_CLIENT_TOKEN']
+          if 'SLACK_CLIENT_TOKEN' in os.environ else None))
 fields = args.fields
 
 assert token is not None, 'No Slack bot oauth token provided!'
