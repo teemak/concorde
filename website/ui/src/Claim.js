@@ -39,7 +39,7 @@ const Claim = () => {
     var success = false;
 
     var loading = false;
-    
+
     const mxid = '@' + username + ':' + config.matrixDomain;
 
     return {
