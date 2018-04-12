@@ -122,7 +122,7 @@ const Claim = () => {
                         error != '' ? m('div.error', error) : null,
                         m('button',
                             {
-                                class: Password.validate(password, password2) ? 'valid' : 'invalid',
+                                class: (Password.validate(password, password2) == null) ? 'valid' : 'invalid',
                                 disabled: success || loading,
                                 onclick: event => {
                                     event.preventDefault();
@@ -142,7 +142,7 @@ const Claim = () => {
                                                  * + (as is reasonable) but mithril doesn't translate those +'es
                                                  * back into real spaces (boo). Luckily, urllib does encode real +'es
                                                  * as %2B so display names containing a + will roundtrip safely. */
-                                                displayName: displayName.replace(/\+/g, ' '),
+                                                displayName: displayName ? displayName.replace(/\+/g, ' ') : '',
                                                 code: code,
                                                 password: password
                                             }

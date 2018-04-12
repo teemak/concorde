@@ -66,15 +66,22 @@ def claim():
     new_password = content['password']
 
     if not request_is_valid(username, code):
+        print 'CONCORDE: INVALID_REQUEST %s (%s) - %s' % (username,
+                                                          display_name, code)
         return REQUEST_VALIDATION_FAILED
 
     matrix = Matrix(HOMESERVER)
     try:
         matrix.claim_account(username, PASSGEN_SECRET, new_password, display_name)
+        print 'CONCORDE: SUCCESS %s (%s)' % (username, display_name)
         return SUCCESS
     except PasswordAlreadyReset:
+        print 'CONCORDE: ALREADY_CLAIMED %s (%s)' % (username, display_name)
         return ALREADY_CLAIMED
     except MatrixRequestError as exception:
+        print 'CONCORDE: GENERIC_FAILURE %s (%s) - %s' % (username,
+                                                          display_name,
+                                                          exception.code)
         return json.dumps({
             'response_code': exception.code,
             'message': 'This request failed - please try again later.',

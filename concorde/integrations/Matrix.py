@@ -62,22 +62,22 @@ class Matrix(object):
         matrix = MatrixClient(self._base_url)
 
         old_password = password_function(mxid, passgen_secret)
-        matrix.login_with_password_no_sync(username=mxid,
-                                           password=old_password)
-
-        if display_name:
-            matrix.api.set_display_name(matrix.user_id, display_name)
-
-        body = {
-            "auth": {
-                "type": "m.login.password",
-                "user": mxid,
-                "password": old_password
-            },
-            "new_password": new_password
-        }
-
         try:
+            matrix.login_with_password_no_sync(username=mxid,
+                                               password=old_password)
+
+            if display_name:
+                matrix.api.set_display_name(matrix.user_id, display_name)
+
+            body = {
+                "auth": {
+                    "type": "m.login.password",
+                    "user": mxid,
+                    "password": old_password
+                },
+                "new_password": new_password
+            }
+
             matrix.api._send('POST', '/account/password', body, api_path='/_matrix/client/r0')
             return True
         except MatrixRequestError as exception:
