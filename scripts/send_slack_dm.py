@@ -12,7 +12,7 @@ from slackclient import SlackClient
 parser = argparse.ArgumentParser(description='Send a DM to a Slack user')
 parser.add_argument('--bot-oauth-token')
 parser.add_argument('--skip-rate-limit', action='store_true')
-parser.add_argument('--slack_id', required=True)
+parser.add_argument('--slack-id', required=True)
 parser.add_argument('--message', required=True)
 args = parser.parse_args()
 
