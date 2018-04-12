@@ -43,6 +43,10 @@ div.content-title {
 div.content-title h1 {
     font-size: larger;
 }
+div.content-header img {
+    width: 100%;
+    display: block;
+}
 div.content {
     margin-top: 0px;
     padding: 20px;

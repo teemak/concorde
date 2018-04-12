@@ -62,6 +62,9 @@ const Claim = () => {
                 m('div.content-title',
                     m('h1', 'Import account settings')
                 ),
+                m('div.content-header',
+                    m('img', {src: require('Resources/tadhack_logo.png')})
+                ),
                 m('div.content', [
                     m('h3', 'Welcome'),
                     m('p', 'Welcome to Riot.im, the free and open source collaboration tool ' +
