@@ -57,5 +57,9 @@ rely on standard Matrix third party identifier invites to invite users by email)
     - `./register_matrix_user.py --homeserver <homeserver_url> --homeserver-secret <homeserver_secret> --passgen-secret <passgen_secret> <mxid mxid mxid...>`
     - `./generate_link.py --migration-secret <migration_secret> <S3 public url for index.html> <mxid> --display-name <display name>`
     - `./send_slack_dm.py --bot-oauth-token <bot-oauth-token> <slack user id> <message (probably including the generated link)>`
+1. Watch the registrations roll in!
+    - Go back to the api directory: `cd website/api`
+    - `zappa tail | grep CONCORDE`
+    - Watch the successes (or failures) in real time :smile:
 
 And Bob's your uncle.
