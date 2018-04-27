@@ -105,3 +105,4 @@ secrets.js
 node_modules
 website/api/config.yaml
 zappa_settings.json
+scratch
