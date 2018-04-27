@@ -32,7 +32,7 @@ else:
 slack = SlackClient(token)
 
 response = slack.api_call('users.list')
-writer = csv.writer(sys.stdout)
+writer = csv.writer(sys.stdout, lineterminator='\n')
 
 if 'members' not in response:
     # We didn't get the expected response back from Slack; spit out the Slack response
@@ -40,6 +40,7 @@ if 'members' not in response:
     print >> sys.stderr, json.dumps(response, indent=2)
     exit(1)
 
+writer.writerow(fields)
 for user in response['members']:
     if user['is_bot'] or user['deleted'] or user['id'] == 'USLACKBOT':
         # Unlike other bots, slackbot is uniquely not reported as being a bot by Slack
