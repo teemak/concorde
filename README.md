@@ -1,6 +1,6 @@
-# Concorde: Slack -> Riot.im Account Migration Manager
+# Concorde: Slack Workspace -> Riot.im Account Migration Manager
 
-## So you want to migrate from Slack to Riot.im?
+### So you want to migrate from Slack to Riot.im?
 Great choice!
 
 This repo brings together some tools and self-hostable infrastructure to help guide your users from Slack to their new home on Riot.im.
@@ -21,11 +21,14 @@ In that case you can use a subset of the tools to manage a simpler migration - y
 `scripts/list_slack_users.py` to fetch a list of Slack user email addresses and then use the standard Matrix 'invite by email' feature to guide your users onto Riot.im.
 
 ## Step by step instructions
-The migration management web interface comprises:
-- a static Mithril.js web form
-- a stateless python Flask API
+We are going to (not necessarily in this order):
+    - puppet a Slack bot to pull the necessary details out of Slack to pre-register accounts for users on a Matrix homeserver
+    - build and deploy a web interface that lets Slack users securely claim their accounts on a Matrix homeserver
+    - puppet the same Slack bot to advertise a unique link to each of the migrating Slack users
 
-The API has been optimised for deployment to AWS using Zappa, and these instructions [assume](https://www.xkcd.com/1339/) you're using the same - other hosting options are available (and it shouldn't be too hard to run the Flask API somewhere else with some modest tweaking).
+The migration management web interface comprises a **static Mithril.js web form** and a **stateless python Flask API**.
+
+These instructions [assume](https://www.xkcd.com/1339/) you're using AWS to host the static .js page, and the Flask API has been optimised for deployment to AWS lambda using Zappa, but other hosting options are available and it shouldn't be too hard to adapt.
 
 ### Before you start
 Make sure you have:
@@ -40,6 +43,7 @@ Make sure you have:
     - [Virtualenv](https://virtualenv.pypa.io/en/stable/) installed on your local machine
     - [Zappa](https://github.com/Miserlou/Zappa) installed on your local machine
     - [npm](https://www.npmjs.com/) installed on your local machine
+1. Finally: **consider posting a public statement on an official channel.** Your users will greet a direct message from an unfamiliar Slack bot with skepticism, so make sure you give them enough information that they know they can trust it :smile:.
 
 ### Steps
 
@@ -111,6 +115,6 @@ done < slack_users.csv
 ```
 5. `~/concorde/scripts$ cd ..`
 
-#### 7. Watch the registrations in real time:
+#### 7. Watch the registrations in real time:
 1. `~/concorde$ cd website/api`
 1. `~/concorde/website/api$ zappa tail | grep CONCORDE`
