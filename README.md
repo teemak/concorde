@@ -22,9 +22,10 @@ In that case you can use a subset of the tools to manage a simpler migration - y
 
 ## Step by step instructions
 We are going to (not necessarily in this order):
-    - puppet a Slack bot to pull the necessary details out of Slack to pre-register accounts for users on a Matrix homeserver
-    - build and deploy a web interface that lets Slack users securely claim their accounts on a Matrix homeserver
-    - puppet the same Slack bot to advertise a unique link to each of the migrating Slack users
+
+ - puppet a Slack bot to pull the necessary details out of Slack to pre-register accounts for users on a Matrix homeserver
+ - build and deploy a web interface that lets Slack users securely claim their accounts on a Matrix homeserver
+ - puppet the same Slack bot to advertise a unique link to each of the migrating Slack users
 
 The migration management web interface comprises a **static Mithril.js web form** and a **stateless python Flask API**.
 
@@ -43,7 +44,7 @@ Make sure you have:
     - [Virtualenv](https://virtualenv.pypa.io/en/stable/) installed on your local machine
     - [Zappa](https://github.com/Miserlou/Zappa) installed on your local machine
     - [npm](https://www.npmjs.com/) installed on your local machine
-1. Finally: **consider posting a public statement on an official channel.** Your users will greet a direct message from an unfamiliar Slack bot with skepticism, so make sure you give them enough information that they know they can trust it :smile:.
+1. Finally: **consider posting a public statement on an official channel.** Your users will greet a direct message from an unfamiliar Slack bot with skepticism, so make sure you give them enough information that they know it can be trusted :smile:
 
 ### Steps
 
