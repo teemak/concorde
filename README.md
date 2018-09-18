@@ -5,6 +5,8 @@ Great choice!
 
 This repo brings together some tools and self-hostable infrastructure to help guide your users from Slack to their new home on Riot.im.
 
+<img src="https://raw.githubusercontent.com/lampholder/concorde/master/screenshot.png" height=500px />
+
 ### What does it do?
 The tools in this repo will help you to:
 - mirror the set of Slack users onto a Matrix.org homeserver
