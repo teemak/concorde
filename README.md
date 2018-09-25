@@ -18,7 +18,7 @@ The end result is that you can guarantee that **@alice** from your Slack workspa
 ### What does it not do?
 These tools do not copy or sync rooms, room membership or room history.
 
-### Continuity of identity isn't important to me
+### What if continuity of identity isn't important to me?
 In that case you can use a subset of the tools to manage a simpler migration - you might still want to use
 `scripts/list_slack_users.py` to fetch a list of Slack user email addresses and then use the standard Matrix 'invite by email' feature to guide your users onto Riot.im.
 
